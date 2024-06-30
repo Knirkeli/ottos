@@ -2,24 +2,36 @@ import React, { useState, useEffect } from "react";
 import { apiRequest, API_LISTINGS } from "../shared/apis";
 import { getAccessToken, getApiKey } from "../shared/cookies";
 
-const PlaceBidComponent = ({ listingId, initialBidAmount = "" }) => {
+const PlaceBidComponent = (
+  { listingId }: { listingId: string },
+  initialBidAmount = ""
+) => {
   const [amount, setAmount] = useState(initialBidAmount);
   const [currentBid, setCurrentBid] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string>("") as [
+    string,
+    React.Dispatch<React.SetStateAction<string>>
+  ]; // Explicitly type 'error' as a string
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     const fetchCurrentBid = async () => {
       try {
         const requestUrl = `${API_LISTINGS}/${listingId}?_bids=true`;
+        const apiKey = getApiKey();
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getAccessToken()}`,
+        };
+        // Only add the "X-Noroff-API-Key" header if apiKey is not undefined
+        if (apiKey) {
+          headers["X-Noroff-API-Key"] = apiKey;
+        }
+
         const response = await fetch(requestUrl, {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getAccessToken()}`,
-            "X-Noroff-API-Key": getApiKey(),
-          },
+          headers,
         });
 
         if (!response.ok) {
@@ -30,7 +42,8 @@ const PlaceBidComponent = ({ listingId, initialBidAmount = "" }) => {
         console.log("Current bid data:", data);
         if (data.bids && data.bids.length > 0) {
           const highestBid = data.bids.reduce(
-            (max, bid) => (bid.amount > max ? bid.amount : max),
+            (max: number, bid: { amount: number }) =>
+              bid.amount > max ? bid.amount : max,
             data.bids[0].amount
           );
           setCurrentBid(highestBid); // Set the highest bid
@@ -48,7 +61,7 @@ const PlaceBidComponent = ({ listingId, initialBidAmount = "" }) => {
     return !isNaN(num) && num > 0;
   };
 
-  const handleBidSubmit = async (e) => {
+  const handleBidSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (!isValidAmount()) {
       setError("Please enter a valid positive number for the bid amount.");
@@ -56,7 +69,7 @@ const PlaceBidComponent = ({ listingId, initialBidAmount = "" }) => {
     }
 
     setLoading(true);
-    setError(null);
+    setError("");
     setSuccess(false);
 
     try {
@@ -96,7 +109,13 @@ const PlaceBidComponent = ({ listingId, initialBidAmount = "" }) => {
       // Reload the page after successful bid placement
       window.location.reload();
     } catch (error) {
-      setError(error.message || "An error occurred while placing the bid.");
+      // Check if error is an instance of Error
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        // Fallback error message if error is not an instance of Error
+        setError("An error occurred while placing the bid.");
+      }
       setLoading(false);
     }
   };
