@@ -29,10 +29,10 @@
 import { useState, useEffect } from "react";
 import { apiRequest, API_LISTINGS } from "../shared/apis";
 
-export const useFetchListing = (id) => {
+export const useFetchListing = (id: unknown) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     if (!id) {
@@ -45,8 +45,8 @@ export const useFetchListing = (id) => {
         const response = await apiRequest(`${API_LISTINGS}/${id}?_seller=true&_bids=true`);
         setData(response.data);
         setLoading(false);
-      } catch (error) {
-        setError(error);
+      } catch (error: unknown) {
+        setError(error as Error);
         setLoading(false);
       }
     };
