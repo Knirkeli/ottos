@@ -15,7 +15,6 @@ This is an auction site built using Next.js, Tailwind CSS, and TypeScript.
 - User authentication
 - Create and manage auctions
 - Place bids on auctions
-- Real-time updates using websockets
 
 ## Technologies Used
 
