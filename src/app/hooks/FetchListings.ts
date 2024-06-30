@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { API_LISTINGS } from '../shared/apis';
 
 export const useFetch = (initialCount = 100, active = true) => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(initialCount); // For pagination
   const [isError, setIsError] = useState(false);
