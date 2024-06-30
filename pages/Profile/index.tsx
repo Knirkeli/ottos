@@ -50,7 +50,7 @@ const UserProfile = () => {
         </div>
         <div className="mt-4">
           <div>
-            <UserListing listings={[]} />
+            <UserListing listings={profile.listings} />
           </div>
         </div>
         <Popover>
