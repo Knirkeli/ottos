@@ -1,34 +1,5 @@
-// import React, { useState } from "react";
-
-// const NewAvatar: React.FC = () => {
-//   const [avatarUrl, setAvatarUrl] = useState("");
-
-//   const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     setAvatarUrl(event.target.value);
-//   };
-
-//   const handleUpdateClick = () => {
-//     // Perform update logic here
-//     console.log("Updating avatar URL:", avatarUrl);
-//   };
-
-//   return (
-//     <div>
-//       <input
-//         type="text"
-//         value={avatarUrl}
-//         onChange={handleUrlChange}
-//         title="Avatar URL"
-//       />
-//       <button onClick={handleUpdateClick}>Update</button>
-//     </div>
-//   );
-// };
-
-// export default NewAvatar;
-
 import React, { useState } from "react";
-import { apiRequest, API_PROFILE } from "../shared/apis"; // Adjust the import path as necessary
+import { apiRequest, API_PROFILE } from "../shared/apis";
 
 const NewAvatar: React.FC = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
@@ -39,7 +10,7 @@ const NewAvatar: React.FC = () => {
 
   const handleUpdateClick = async () => {
     // Function to get the value of a cookie by name
-    const getCookieValue = (name) => {
+    const getCookieValue = (name: string) => {
       const nameString = name + "=";
       const value = document.cookie
         .split("; ")
