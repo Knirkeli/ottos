@@ -39,7 +39,7 @@ const PlaceBidComponent = (
         }
 
         const { data } = await response.json(); // Destructure to get data directly
-        console.log("Current bid data:", data);
+
         if (data.bids && data.bids.length > 0) {
           const highestBid = data.bids.reduce(
             (max: number, bid: { amount: number }) =>
@@ -104,7 +104,6 @@ const PlaceBidComponent = (
       setSuccess(true);
       setAmount(""); // Reset amount after successful bid
       setCurrentBid(data.amount); // Update current bid with the new bid amount
-      console.log("Bid placed successfully:", data);
 
       // Reload the page after successful bid placement
       window.location.reload();

@@ -1,5 +1,6 @@
 //types for profile
 export interface Profile {
+    listings: any;
     name: string;
     email: string;
     bio: string;

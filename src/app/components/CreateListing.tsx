@@ -2,16 +2,21 @@ import React, { useState } from "react";
 import { apiRequest, API_LISTINGS } from "../shared/apis";
 import Cookies from "js-cookie";
 
+type ImageInfo = {
+  url: string;
+  alt: string;
+};
+
 export default function CreateListingForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [tags, setTags] = useState([]);
-  const [media, setMedia] = useState(null); // Adjust initial state based on your media state structure
+  const [tags, setTags] = useState<string[]>([]);
+  const [media, setMedia] = useState<ImageInfo[] | null>(null);
   const [endsAt, setEndsAt] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -24,15 +29,14 @@ export default function CreateListingForm() {
     }
 
     try {
-      const response = await apiRequest(
-        API_LISTINGS,
-        "POST",
-        { title, description, tags, media, endsAt },
-        { Authorization: `Bearer ${token}` }
-      );
-      console.log("Listing created:", response);
+      const response = await apiRequest(API_LISTINGS, "POST", {
+        title,
+        description,
+        tags,
+        media,
+        endsAt,
+      });
       // Reset form or redirect user
-      // Resetting form example:
       setTitle("");
       setDescription("");
       setTags([]);
@@ -88,7 +92,6 @@ export default function CreateListingForm() {
         <input
           type="text"
           onChange={(e) => setMedia([{ url: e.target.value, alt: "" }])}
-          placeholder="Media URL"
           className="mt-1 block w-full border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
         />
       </label>

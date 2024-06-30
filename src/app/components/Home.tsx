@@ -1,13 +1,22 @@
 "use client";
 import { useState } from "react";
 import { useFetch } from "../hooks/FetchListings";
-import Cookies from "js-cookie";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
 import { SearchComponent } from "./Search";
 
 export default function Home() {
-  const { data: listings, loading, setCount } = useFetch();
+  const {
+    data: listings = [] as {
+      media: any;
+      id: any;
+      tags: any;
+      description: any;
+      title: string;
+    }[],
+    loading,
+    setCount,
+  } = useFetch();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (query: string) => {
@@ -19,7 +28,9 @@ export default function Home() {
       listing.title.toLowerCase().includes(searchQuery) ||
       listing.description?.toLowerCase().includes(searchQuery) || // Use optional chaining here
       (listing.tags &&
-        listing.tags.some((tag) => tag.toLowerCase().includes(searchQuery)))
+        listing.tags.some((tag: string) =>
+          tag.toLowerCase().includes(searchQuery)
+        ))
   );
 
   if (loading) {
